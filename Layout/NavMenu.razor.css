@@ -1,0 +1,65 @@
+.menu-shell {
+    padding: 1.1rem 0.85rem 1.25rem;
+}
+
+.menu-kicker {
+    color: #d8d0d6;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 0.74rem;
+}
+
+.archive-accordion {
+    --bs-accordion-bg: transparent;
+    --bs-accordion-color: #f3edf0;
+    --bs-accordion-btn-bg: rgba(255, 255, 255, 0.08);
+    --bs-accordion-btn-color: #fff8fc;
+    --bs-accordion-active-bg: rgba(255, 255, 255, 0.2);
+    --bs-accordion-active-color: #ffffff;
+    --bs-accordion-btn-focus-box-shadow: none;
+    --bs-accordion-border-color: rgba(255, 255, 255, 0.14);
+}
+
+.post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.post-list li {
+    margin: 0.2rem 0;
+}
+
+.post-list ::deep .post-link {
+    display: block;
+    border-radius: 0.4rem;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #766b72 !important;
+    text-decoration: none;
+    padding: 0.35rem 0.45rem;
+    line-height: 1.35;
+    transition: background-color 120ms ease, color 120ms ease;
+}
+
+.post-list ::deep .post-link:link,
+.post-list ::deep .post-link:visited {
+    color: #766b72 !important;
+}
+
+.post-list ::deep .post-link:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #f2ecef !important;
+}
+
+.post-list ::deep .post-link.active {
+    background: #b8bec6;
+    border-color: #b8bec6;
+    color: #1f2328 !important;
+    font-weight: 600;
+}
+
+.post-list ::deep .post-link:focus-visible {
+    outline: 2px solid #c7cdd5;
+    outline-offset: 2px;
+}
