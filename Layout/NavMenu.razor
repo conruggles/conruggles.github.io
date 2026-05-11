@@ -14,9 +14,9 @@
     }
     else
     {
-        <NavLink href="/blog" class="post-link" Match="NavLinkMatch.All" @onclick="HandlePageSelected">
+        <a href="/blog" class="post-link">
             Blog
-        </NavLink>
+        </a>
         <Accordion AlwaysOpen="true" Flush="true" Class="archive-accordion">
             @foreach (var pageGroup in groupedPages)
             {
