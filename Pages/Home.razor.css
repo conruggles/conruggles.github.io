@@ -1,0 +1,46 @@
+.post-shell {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 1.25rem 0;
+}
+
+.post-content {
+    width: min(100%, 760px);
+    background: #fffdfa;
+}
+
+.post-title {
+    font-size: clamp(2rem, 2.4vw, 2.8rem);
+    line-height: 1.15;
+    color: #1c1b18;
+}
+
+.post-body {
+    font-size: 1.125rem;
+    line-height: 1.9;
+    color: #22201b;
+}
+
+.post-body :deep(p) {
+    margin-bottom: 1.3rem;
+}
+
+.post-body :deep(code) {
+    color: #7f1d1d;
+    background: #f4eee1;
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 767.98px) {
+    .post-shell {
+        padding: 0.75rem 0;
+    }
+
+    .post-body {
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+}

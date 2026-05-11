@@ -1,0 +1,81 @@
+@inject NavigationManager NavigationManager
+@inject SiteContentRepository SiteContentRepository
+
+<section class="menu-shell">
+    <p class="menu-kicker mb-1">Pages</p>
+
+    @if (isLoading)
+    {
+        <p class="text-light-emphasis mb-0">Loading pages...</p>
+    }
+    else if (groupedPages.Count == 0)
+    {
+        <p class="text-light-emphasis mb-0">No pages found.</p>
+    }
+    else
+    {
+        <Accordion AlwaysOpen="true" Flush="true" Class="archive-accordion">
+            @foreach (var pageGroup in groupedPages)
+            {
+                <AccordionItem Title="@(pageGroup.Key)" Active="true">
+                    <Content>
+                        <ul class="post-list">
+                            @foreach (var sitePage in pageGroup.Value)
+                            {
+                                <li>
+                                    <NavLink href="@GetPageHref(sitePage)" class="post-link" Match="NavLinkMatch.All" @onclick="HandlePageSelected">
+                                        @sitePage.Title
+                                    </NavLink>
+                                </li>
+                            }
+                        </ul>
+                    </Content>
+                </AccordionItem>
+            }
+        </Accordion>
+    }
+</section>
+
+@code {
+    [Parameter] public EventCallback PageSelected { get; set; }
+
+    private bool isLoading = true;
+    private Dictionary<string, List<SitePage>> groupedPages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var pages = await SiteContentRepository.GetAllPagesAsync();
+
+        groupedPages = pages
+            .GroupBy(GetSectionName)
+            .OrderBy(group => group.Key)
+            .ToDictionary(
+                group => group.Key,
+                group => group.OrderBy(page => page.Title, StringComparer.OrdinalIgnoreCase).ToList());
+
+        isLoading = false;
+    }
+
+    private static string GetSectionName(SitePage page)
+    {
+        var firstSlash = page.RelativePath.IndexOf('/');
+        if (firstSlash < 0)
+            return "General";
+
+        var sectionName = page.RelativePath[..firstSlash];
+        return SiteContentRepository.PathPartToTitle(sectionName);
+    }
+
+    private string GetPageHref(SitePage page)
+    {
+        var basePath = new Uri(NavigationManager.BaseUri).AbsolutePath.TrimEnd('/');
+        return string.IsNullOrEmpty(basePath)
+            ? $"/{page.RelativePath}"
+            : $"{basePath}/{page.RelativePath}";
+    }
+
+    private async Task HandlePageSelected()
+    {
+        await PageSelected.InvokeAsync();
+    }
+}

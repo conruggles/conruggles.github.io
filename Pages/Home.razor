@@ -1,0 +1,88 @@
+@page "/"
+@page "/{*PagePath}"
+@inject SiteContentRepository SiteContentRepository
+@inject HttpClient Http
+@using System.Text.RegularExpressions
+
+<PageTitle>@PageTitleText</PageTitle>
+
+@if (isNotFound)
+{
+    <section class="post-shell">
+        <div class="post-content card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+                <h1 class="display-6 mb-3">Page Not Found</h1>
+                <p class="lead mb-0">The requested page does not exist in this site.</p>
+            </div>
+        </div>
+    </section>
+}
+else if (selectedPage is null)
+{
+    <section class="post-shell">
+        <div class="post-content card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+                <h1 class="display-6 mb-3">No Pages Yet</h1>
+                <p class="lead mb-0">Add an HTML file under wwwroot/content to get started.</p>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <section class="post-shell">
+        <article class="post-content card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5">
+                <header class="mb-4">
+                    <h1 class="post-title mb-0">@selectedPage.Title</h1>
+                </header>
+
+                <div class="post-body">
+                    @((MarkupString)pageHtml)
+                </div>
+            </div>
+        </article>
+    </section>
+}
+
+@code {
+    [Parameter] public string? PagePath { get; set; }
+
+    private static readonly Regex FirstH1Regex = new(
+        @"<h1\b[^>]*>.*?</h1>",
+        RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
+    private SitePage? selectedPage;
+    private string pageHtml = string.Empty;
+    private bool isNotFound;
+    private string PageTitleText => selectedPage is null ? "Connor Ruggles" : $"{selectedPage.Title} | Connor Ruggles";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isNotFound = false;
+
+        if (string.IsNullOrWhiteSpace(PagePath))
+        {
+            selectedPage = await SiteContentRepository.GetDefaultPageAsync();
+        }
+        else
+        {
+            selectedPage = await SiteContentRepository.FindAsync(PagePath);
+            if (selectedPage is null)
+            {
+                isNotFound = true;
+                pageHtml = string.Empty;
+                return;
+            }
+        }
+
+        if (selectedPage is null)
+        {
+            pageHtml = string.Empty;
+            return;
+        }
+
+        var html = await Http.GetStringAsync(selectedPage.ContentPath);
+        pageHtml = FirstH1Regex.Replace(html, string.Empty, 1).Trim();
+    }
+}
