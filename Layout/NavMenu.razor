@@ -14,7 +14,7 @@
     }
     else
     {
-        <a href="https://connorruggles.dev/blog/" class="post-link">
+        <a href="/blog/" class="post-link" @onclick="NavigateToBlog" @onclick:preventDefault="true">
             Blog
         </a>
         <Accordion AlwaysOpen="true" Flush="true" Class="archive-accordion">
@@ -80,5 +80,10 @@
     private async Task HandlePageSelected()
     {
         await PageSelected.InvokeAsync();
+    }
+
+    private void NavigateToBlog()
+    {
+        NavigationManager.NavigateTo("/blog/", forceLoad: true);
     }
 }
